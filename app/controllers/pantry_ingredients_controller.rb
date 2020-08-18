@@ -6,8 +6,9 @@ class PantryIngredientsController < ApplicationController
   end
 
   def create 
-    if (!(PantryIngredient.where(ingredient_id: params['id'], user_id: params["currentUser"]["id"]).length == 0))
-      render json:  {error: 'You Already Have That Item' }
+    found = PantryIngredient.where(ingredient_id: params['id'], user_id: params["currentUser"]["id"])
+    if (found.length != 0)
+      render json:  {error: 'You Already Have That Item', ingredient_object: found[0].ingredient, ingredient_id: found[0].ingredient.id, pantry_id: found[0].id, user_id: found[0].user.id  }
     else
       added_ingredient = PantryIngredient.create(ingredient_id: params["id"], user_id: params["currentUser"]["id"])
       render json: added_ingredient.ingredient
